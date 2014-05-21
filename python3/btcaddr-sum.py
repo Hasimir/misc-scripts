@@ -20,6 +20,7 @@ __version__ = "0.0.1"
 
 import requests
 import sys
+import time
 
 l = len(sys.argv)
 
@@ -33,4 +34,5 @@ url = "http://blockchain.info/q/addressbalance/%s/100000000" % btc
 r = requests.get(url, verify=False)
 i = float(r.text) / 100000000.0
 
-print("%s has %s BTC on it" % (btc, str(i)))
+print("""%s has %s BTC on it
+as of %s UTC.""" % (btc, str(i), time.asctime(time.gmtime())))
