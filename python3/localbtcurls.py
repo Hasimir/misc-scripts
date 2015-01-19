@@ -35,4 +35,6 @@ jsonid = { "ch": "2wff" }
 
 newurl = url+"?ch="+lbtcid
 
-print(newurl)
+print("""
+{0}
+""".format(newurl))
