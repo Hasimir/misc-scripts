@@ -10,7 +10,7 @@ if len(sys.argv) < 2:
 else:
     fpr = sys.argv[1:]
 
-fkid = "".join(fpr.split())
+fkid = "".join(fpr)
 lkid = fkid[-16:]
 skid = fkid[-8:]
 
@@ -18,10 +18,9 @@ info = """
 The key full key ID (fingerprint) is:
 
     {0}
-    {1}
 
- The long key ID is:  0x{2}
-The short key ID is:  0x{3}
-""".format(fpr, fkid, lkid, skid)
+ The long key ID is:  0x{1}
+The short key ID is:  0x{2}
+""".format(fkid, lkid, skid)
 
 print(info)
