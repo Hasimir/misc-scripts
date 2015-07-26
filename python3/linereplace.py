@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 # ben@adversary.org
 # OpenPGP/GPG key:  0x321E4E2373590E5D
 #
-# Version:  0.0.2
+# Version:  0.0.3
 #
 # BTC:  19J2Dc5DTztWRWMPcLwshj96NAnXAxtCvk
 # License:  GPLv3
@@ -29,7 +29,7 @@ from __future__ import unicode_literals
 __author__ = "Ben McGinnes <ben@adversary.org>"
 __copyright__ = "Copyright © Benjamin D. McGinnes, 2013-2015"
 __license__ = "GPLv3"
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __bitcoin__ = "19J2Dc5DTztWRWMPcLwshj96NAnXAxtCvk"
 
 import os
@@ -83,25 +83,28 @@ if files is not None:
                 f = open(filename, "r")
                 lines = f.readlines()
                 f.close()
-
-                f = open(filename, "w")
-                for line in lines:
-                    if pattern in line:
-                        line = re.sub(pattern, logrus, line)
-                    f.write(line)
-                f.close()
+                fisbyte = False
             except:
                 f = open(filename, "rb")
                 lines = f.readlines()
                 f.close()
+                fisbyte = True
 
-                f = open(filename, "wb")
-                for line in lines:
-                    if pattern.encode("utf-8") in line:
-                        line = re.sub(pattern.encode("utf-8"),
-                                      logrus.encode("utf-8"), line)
-                    f.write(line)
-                f.close()
+            if fisbyte is True:
+                wbit = "wb"
+                pbit = pattern.encode("utf-8")
+                lbit = logrus.encode("utf-8")
+            elif fisbyte is False:
+                wbit = "w"
+                pbit = pattern
+                lbit = logrus
+                
+            f = open(filename, wbit)
+            for line in lines:
+                if pattern in line:
+                    line = re.sub(pbit, lbit, line)
+                f.write(line)
+            f.close()
 else:
     print("There are no files to process.")
     pass
