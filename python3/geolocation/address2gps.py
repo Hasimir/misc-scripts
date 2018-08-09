@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3
 
-# Copyright © Ben McGinnes, 2018
+# Copyright ©  Benjamin D. McGinnes, 2018
+# Ben McGinnes <ben@adversary.org>
+# OpenPGP key: DB4724E6FA4286C92B4E55C4321E4E2373590E5D
 # Licensed under the Apache 2.0 License
 
 import sys
