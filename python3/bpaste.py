@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import print_function
+
+import os.path
+import requests
+import sys
+
+# Copyright © Benjamin D. McGinnes, 2018
+# Copyright (c) Benjamin D. McGinnes, 2018
+#
+# Ben McGinnes <ben@adversary.org>, 0x321E4E2373590E5D
+# OpenPGP: DB4724E6FA4286C92B4E55C4321E4E2373590E5D
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+Usage: bpaste.py <path/to/filename> <lexer> <expiration>
+"""
+
+lexers = []
+lexfile = os.path.abspath("./pasters/bpaste_lexers.txt")
+with open(lexfile, "r") as f:
+    lexed = f.readlines()
+
+for lexx in lexed:
+    lexers.append(lexx.strip())
+
+if len(sys.argv) >= 4:
+    filename = sys.argv[1]
+    lexer = sys.argv[2]
+    expire = sys.argv[3]
+elif len(sys.argv) == 3:
+    filename = sys.argv[1]
+    lexer = sys.argv[2]
+    expire = input("Expiration (default is 1 week): ")
+elif len(sys.argv) == 2:
+    filename = sys.argv[1]
+    lexer = input("File format (optional): ")
+    expire = input("Expiration (default is 1 week): ")
+else:
+    filename = input("Enter the path and filename to paste: ")
+    lexer = input("File format (optional): ")
+    expire = input("Expiration (default is 1 week): ")
+
+if len(lexer) == 0:
+    lexer = None
+    lex = None
+    lxr = None
+else:
+    lex = lexer.lower()
+    lxr = None
+
+if len(expire) > 0:
+    if expire.lower() == "1month" or "month" or "m" or "1mm" or "mm":
+        die = "1month"
+    elif expire.lower() == "never" or "nvr" or "n":
+        die = "never"
+    elif expire.lower() == "1day" or "day" or "d":
+        die = "1day"
+    elif expire.lower() == "1week" or "week" or "w" or "1wk" or "wk":
+        die = "1week"
+    else:
+        die = "1week"
+else:
+    die = "1week"
+
+if lexer is not None and lexers.count(lex) > 0:
+    lxi = lexers.index(lex)
+    lxr = lexers[lxi]
+elif lexer is not None and lexers.count(lex) == 0:
+    # add logic to determine file type based on extension
+    # or maybe using python-magic/libmagic
+    # or use input that does not match list to match own list
+    if lex == "py3":
+        lxr = "python3"
+    elif lex == "py2":
+        lxr = "python"
+    elif lex == "python2":
+        lxr = "python"
+    elif lex == "org":
+        lxr = "text"
+    elif lex == "orgmode":
+        lxr = "text"
+    elif lex == "org-mode":
+        lxr = "text"
+    elif lex == "txt":
+        lxr = "text"
+    elif lex == "markdown":
+        lxr = "md"
+    elif lex == "htm":
+        lxr = "html"
+    elif lex == "xhtml":
+        lxr = "html"
+    elif lex == "sgml":
+        lxr = "xml"
+    elif lex == "dita":
+        lxr = "xml"
+    elif lex == "ditamap":
+        lxr = "xml"
+    else:
+        pass
+else:
+    # final check for associating filetype with lexer to be added.
+    pass
+
+if lxr is None:
+    lxr = "text"
+
+with open(filename, "r") as f:
+    code = f.read()
+
+url = "https://bpaste.net"
+payload = {"code": code, "lexer": lxr, "expiry": die}
+
+response = requests.post(url, verify=True, data=payload)
+
+if response.ok is True:
+    print(response.url)
+else:
+    print("HTTP Post failed; try again or manually at: {0}".format(url))
