@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from __future__ import unicode_literals
-from __future__ import division
 from __future__ import print_function
 
 import datetime
@@ -34,8 +34,7 @@ Upon success it prints the URL of the paste and a URL to remove the paste to
 STDOUT.  Upon failure it prints a message to try again or manually.
 
 Requires a relative subdirectory called "pasters/" for persistent storage of
-some metadata (lexers and paste records for manual deletion).  Change the
-path(s) for leading to pasters/ as required.
+some metadata (lexers and paste records for manual deletion).
 
 Usage: bpaste.py <path/to/filename> <lexer> <expiration>
 """
