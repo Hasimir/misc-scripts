@@ -34,14 +34,17 @@ Upon success it prints the URL of the paste and a URL to remove the paste to
 STDOUT.  Upon failure it prints a message to try again or manually.
 
 Requires a relative subdirectory called "pasters/" for persistent storage of
-some metadata (lexers and paste records for manual deletion).
+some metadata (lexers and paste records for manual deletion).  Change the
+path(s) for leading to pasters/ as required.
 
 Usage: bpaste.py <path/to/filename> <lexer> <expiration>
 """
 
+bpastehist = os.path.expanduser("~/bin/pasters/bpasted_history.txt")
+lexicon = os.path.expanduser("~/bin/pasters/bpaste_lexers.txt")
 lexers = []
-bpastelog = os.path.abspath("./pasters/bpasted_history.txt")
-lexfile = os.path.abspath("./pasters/bpaste_lexers.txt")
+bpastelog = os.path.realpath(bpastehist)
+lexfile = os.path.realpath(lexicon)
 with open(lexfile, "r") as f:
     lexed = f.readlines()
 
