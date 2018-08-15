@@ -76,17 +76,22 @@ else:
     lex = lexer.lower()
     lxr = None
 
-if len(expire) > 0:
-    if expire.lower() == "1month" or "month" or "m" or "1mm" or "mm":
-        die = "1month"
-    elif expire.lower() == "never" or "nvr" or "n":
-        die = "never"
-    elif expire.lower() == "1day" or "day" or "d":
-        die = "1day"
-    elif expire.lower() == "1week" or "week" or "w" or "1wk" or "wk":
-        die = "1week"
-    else:
-        die = "1week"
+if expire.lower().startswith("d") is True:
+    die = "1day"
+elif expire.lower().startswith("m") is True:
+    die = "1month"
+elif expire.lower().startswith("n") is True:
+    die = "never"
+elif expire.lower().startswith("w") is True:
+    die = "1week"
+elif expire.lower().startswith("1d") is True:
+    die = "1day"
+elif expire.lower().startswith("1m") is True:
+    die = "1month"
+elif expire.lower().startswith("0") is True:
+    die = "never"
+elif expire.lower().startswith("1w") is True:
+    die = "1week"
 else:
     die = "1week"
 
