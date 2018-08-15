@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import print_function
 
+import datetime
 import os.path
 import requests
 import sys
@@ -26,12 +27,20 @@ import sys
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
+Pastes the contents of a file to bpaste.net.
+
+Upon success it prints the URL of the paste and a URL to remove the paste to
+STDOUT.  Upon failure it prints a message to try again or manually.
+
+Requires a relative subdirectory called "pasters/" for persistent storage of
+some metadata (lexers and paste records for manual deletion).
+
 Usage: bpaste.py <path/to/filename> <lexer> <expiration>
 """
 
 lexers = []
+bpastelog = os.path.abspath("./pasters/bpasted_history.txt")
 lexfile = os.path.abspath("./pasters/bpaste_lexers.txt")
 with open(lexfile, "r") as f:
     lexed = f.readlines()
@@ -125,10 +134,26 @@ with open(filename, "r") as f:
 
 url = "https://bpaste.net"
 payload = {"code": code, "lexer": lxr, "expiry": die}
+if die != "never":
+    exp = "expires in one {0}".format(die[1:])
+else:
+    exp = "never expires"
 
 response = requests.post(url, verify=True, data=payload)
+runtime = datetime.datetime.utcnow().isoformat()[:19]
 
 if response.ok is True:
+    removals = response.text.splitlines()[-9]
+    removal = removals.strip().replace('"', ' ').split()[2]
+    remover = url + removal
+    servtime = response.headers["Date"]
+    logtext = "{0}Z: {1} - {2} - {3} - {4} - {5}\n".format(
+        runtime, servtime, filename, exp, response.url, remover)
+    with open(bpastelog, "a") as f:
+        f.write(logtext)
     print(response.url)
+    print(remover)
 else:
+    with open(bpastelog, "a") as f:
+        f.write("{0}Z: paste of {1} failed.\n")
     print("HTTP Post failed; try again or manually at: {0}".format(url))
