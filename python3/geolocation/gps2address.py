@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 
 # Copyright ©  Benjamin D. McGinnes, 2018
 # Ben McGinnes <ben@adversary.org>
